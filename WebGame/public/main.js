@@ -21,7 +21,8 @@ var mainState = {
         game.stage.backgroundColor = '#71c5cf';
 
         game.load.image('bird', 'assets/bird.png');  
-        game.load.image('pipe', 'assets/pipe.png'); 
+        game.load.image('coin', 'assets/coin.png'); 
+		game.load.image('trap', 'assets/trap.png'); 
 
         // Load the jump sound
         game.load.audio('jump', 'assets/jump.wav');
@@ -33,10 +34,15 @@ var mainState = {
 		world = this;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        world.pipes = game.add.group();
-        world.pipes.enableBody = true;
-        world.pipes.createMultiple(20, 'pipe');  
-        world.timer = world.game.time.events.loop(3500, world.addRowOfPipes, world);           
+        world.coins = game.add.group();
+        world.coins.enableBody = true;
+        world.coins.createMultiple(20, 'coin');
+
+		world.traps = game.add.group();
+        world.traps.enableBody = true;
+        world.traps.createMultiple(20, 'trap'); 		
+        
+		world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);           
 		
 		
         world.bird = world.game.add.sprite(100, 245, 'bird');
@@ -69,7 +75,8 @@ var mainState = {
 		if (world.bird.y < 0){world.bird.y = WORLD_HEIGHT-50;}
 		if (world.bird.y > WORLD_HEIGHT - 50){world.bird.y = 0;}
 
-        game.physics.arcade.overlap(world.bird, world.pipes, world.hitCoin, null, world); 
+        game.physics.arcade.overlap(world.bird, world.coins, world.hitCoin, null, world); 
+		game.physics.arcade.overlap(world.bird, world.traps, world.hitTrap, null, world); 
 		
         // Slowly rotate the bird downward, up to a certain point.
 		var dy = world.bird.body.velocity.y;
@@ -133,8 +140,15 @@ var mainState = {
 		world.coinSound.play();
     },
 
-    hitPipe: function(bird, pipe) {
-        // If the bird has already hit a pipe, we have nothing to do
+    hitTrap: function(bird, trap) {
+		world.boomSound.play();
+		//todo decrease fuel
+
+		trap.body.x = -100;
+		trap.alive = false;
+		return;
+			
+        // If the bird has already hit a coin, we have nothing to do
         if (world.bird.alive == false)
             return;
             
@@ -142,37 +156,74 @@ var mainState = {
         world.bird.alive = false;
 		world.bird.body.acceleration.y = 0;
 
-        // Prevent new pipes from appearing
+        // Prevent new coins from appearing
         world.game.time.events.remove(world.timer);
     
-        // Go through all the pipes, and stop their movement
-        world.pipes.forEachAlive(function(p){
+        // Go through all the coins, and stop their movement
+        world.coins.forEachAlive(function(p){
             p.body.velocity.x = 0;
         }, world);
 		
-		world.boomSound.play();
+	   world.traps.forEachAlive(function(p){
+            p.body.velocity.x = 0;
+        }, world);
+		
+
     },
 
     restartGame: function() {
         game.state.start('main');
     },
 
-    addOnePipe: function(x, y) {
-        var pipe = world.pipes.getFirstDead();
+    addOnecoin: function(x, y) {
+        var coin = world.coins.getFirstDead();
 
-        pipe.reset(x, y);
-        pipe.body.velocity.x = -100;
-		//pipe.body.width = 1;
-        pipe.checkWorldBounds = true;
-        pipe.outOfBoundsKill = true;
+        coin.reset(x, y);
+        coin.body.velocity.x = -100;
+		//coin.body.width = 1;
+        coin.checkWorldBounds = true;
+        coin.outOfBoundsKill = true;
     },
 
-    addRowOfPipes: function() {
+    addRowOfCoins: function() {
         var hole = Math.floor(Math.random()*5)+1;
         
         for (var i = 0; i < WORLD_HEIGHT / 60; i++)
             if (i == hole && i != hole +1) 
-                world.addOnePipe(WORLD_WIDTH, i*60+10);    
+                world.addOnecoin(WORLD_WIDTH, i*60+10);    
+    },
+	
+	addOneTrap: function(x, y) {
+        var trap = world.traps.getFirstDead();
+
+        trap.reset(x, y);
+        trap.body.velocity.x = -100;
+		//trap.body.width = 1;
+        trap.checkWorldBounds = true;
+        trap.outOfBoundsKill = true;
+    },
+
+    addRowOfTraps: function() {
+        var hole = Math.floor(Math.random()*5)+1;
+        
+        for (var i = 0; i < WORLD_HEIGHT / 60; i++)
+            if (i == hole && i != hole +1) 
+                world.addOneTrap(WORLD_WIDTH, i*60+10);    
+    },
+	
+	addRowOfStuff: function() {
+        var what = Math.floor(Math.random()*3)+1;
+        
+        switch (what)
+		{
+			case 1:
+			case 2:
+			world.addRowOfCoins();
+			break;
+			case 3:
+			world.addRowOfTraps();
+			break;
+		}		
     },
 };
 
