@@ -25,8 +25,23 @@ setInterval(function(){
 }, 1000);
 
 board.on('ready', function(){
-    var led = new five.Led(11);
-	led.strobe();
+   var led = new five.Led(11);
+   led.strobe();
+
+   var count = 0;
+   var previousValue = board.pins[13].value;
+   board.digitalRead(13, function(value) {
+      if(previousValue !== value) {
+            // The user is blowing
+            count++;
+            if(count % 100) { // Filter the output because there is a lot of notification
+              console.log(count);
+            }
+
+            previousValue = value;
+      }
+  })
+
 });
 
 http.listen(process.env.PORT || 80);
