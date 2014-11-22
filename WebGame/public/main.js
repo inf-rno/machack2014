@@ -59,10 +59,21 @@ var mainState = {
 		var da = world.bird.angle - targetAngle;
        if (da != 0)
 	   {
+		  if (Math.abs(da) > 4)
+		  {
 	       if (da>0)
 		   {world.bird.angle-=4;}
 		   else
 		   {world.bird.angle+=4;}
+		   }
+		   else
+		   {
+		   if (da>0)
+		   {world.bird.angle-=1;}
+		   else
+		   {world.bird.angle+=1;}
+		   
+		   }
 		}		   
     },
 
@@ -109,7 +120,8 @@ var mainState = {
         var pipe = world.pipes.getFirstDead();
 
         pipe.reset(x, y);
-        pipe.body.velocity.x = -200;  
+        pipe.body.velocity.x = -200;
+		pipe.body.width = 1;
         pipe.checkWorldBounds = true;
         pipe.outOfBoundsKill = true;
     },
