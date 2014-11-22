@@ -16,10 +16,26 @@
   <div id="gameDiv"> </div>
 
   <script>
-      var socket = io();
-	  socket.on('count',function(msg){
-	     console.log(msg.value);
-	  });
+		var socket = io();
+		socket.on('count',function(msg){
+		 console.log(msg.value);
+		});
+
+		var gameDivObj = document.getElementById('gameDiv');
+		gameDivObj.onmousemove = function(e)
+		{
+		  var dx = e.movementX;
+		  var dy = e.movementY;
+		  var d = Math.round(Math.sqrt(Math.pow(dx, 2)+Math.pow(dy,2)));
+		  socket.emit('simulate', {value:d*2});
+		}
+	  
+		socket.on('flow', function(msg){
+		if (world)
+		{
+			world.flap(msg.value);
+		}
+});
   </script>
 </body>
 

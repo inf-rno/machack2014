@@ -12,6 +12,13 @@ io.on('connection', function(socket){
 	socket.on('disconnect', function(){
 	    console.log('a user disconnected');
 	});
+	
+	socket.on('simulate', function(msg)
+	{
+	
+		console.log("simulating "+JSON.stringify(msg));
+	    io.emit('flow', msg);
+	});
 });
 
 var count =0;

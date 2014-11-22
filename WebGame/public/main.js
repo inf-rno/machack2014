@@ -79,6 +79,10 @@ var mainState = {
         // Play sound
         world.jumpSound.play();
     },
+	flap:function(howMuch)
+	{
+		world.bird.body.velocity.y -= howMuch;
+	},
 
     hitPipe: function() {
         // If the bird has already hit a pipe, we have nothing to do
