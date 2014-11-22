@@ -24,7 +24,9 @@ var mainState = {
         game.load.image('pipe', 'assets/pipe.png'); 
 
         // Load the jump sound
-        game.load.audio('jump', 'assets/jump.wav');     
+        game.load.audio('jump', 'assets/jump.wav');
+		game.load.audio('coin', 'assets/coin.wav');
+		game.load.audio('boom', 'assets/boom.wav');  		
     },
 
     create: function() {
@@ -56,6 +58,8 @@ var mainState = {
 
         // Add the jump sound
         world.jumpSound = world.game.add.audio('jump');
+		world.coinSound = world.game.add.audio('coin');
+		world.boomSound = world.game.add.audio('boom');
     },
 
 	update: function() {
@@ -125,6 +129,8 @@ var mainState = {
 		
 		coin.body.x = -100;
 		coin.alive = false;
+		
+		world.coinSound.play();
     },
 
     hitPipe: function(bird, pipe) {
@@ -143,6 +149,8 @@ var mainState = {
         world.pipes.forEachAlive(function(p){
             p.body.velocity.x = 0;
         }, world);
+		
+		world.boomSound.play();
     },
 
     restartGame: function() {
