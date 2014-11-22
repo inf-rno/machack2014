@@ -61,23 +61,30 @@ var mainState = {
 		
         world.ship = world.game.add.sprite(100, 245, 'ship');
         game.physics.arcade.enable(world.ship);
-        world.ship.body.gravity.y = 500; 
+        world.ship.body.gravity.y = 0; 
 		world.ship.body.width = 100;
 		world.ship.body.height = 40;
 		world.ship.body.offset.x = 10;
 
         // New anchor position
-        world.ship.anchor.setTo(0.5, 0.5); 
+        world.ship.anchor.setTo(0.5, 0.5);
+	world.bird.alive = false; // Game not running yet
  
         var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(world.jump, world); 
 
         world.score = 0;
         world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
-	world.labelScore = world.game.add.text(380, 300, "0", { font: "36px Arial", fill: "#ffffff" }); // Avenir Heavy
-	world.labelScore.text = "Blow to fuel up!"
+	
+	world.fueling = true;
+	world.fuelingTimeLeft = 10;
+	world.labelBlow = world.game.add.text(380, 270, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
+	world.labelBlow.text = "Blow to fuel up!"
+	
+	world.labelBlowTimer = world.game.add.text(470, 320, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
+	world.labelBlowTimer.text = world.fuelingTimeLeft
 
-		world.fuel = 60;
+	world.fuel = 0; // Increment to fuel up
         world.labelFuel = world.game.add.text(20, 80, "0", { font: "30px Arial", fill: "#ffffff" });  
 
 		
@@ -87,9 +94,13 @@ var mainState = {
 		world.boomSound = world.game.add.audio('boom');
     },
 
-	update: function() {
+    update: function() {
 		world.labelFuel.text = world.fuel;
-	
+
+	if(!world.bird.alive) {
+		// Game not started
+		return;
+	}
         if (world.fuel <= 0)
             world.restartGame(); 
 		
@@ -97,7 +108,7 @@ var mainState = {
 		if (world.ship.y > WORLD_HEIGHT - 50){world.ship.y = 0;}
 
         game.physics.arcade.overlap(world.ship, world.coins, world.hitCoin, null, world); 
-		game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world);
+	game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world);
 		
         // Slowly rotate the ship downward, up to a certain point.
 		var dy = world.ship.body.velocity.y;
@@ -144,17 +155,21 @@ var mainState = {
         // Play sound
         world.jumpSound.play();
     },
-	flap:function(howMuch)
+    flap:function(howMuch)
 	{
 		if (howMuch != 0  && world.ship.alive)
 		{
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
+		} else if (!world.bird.alive && howMuch) {
+			// Increment fuel
+			world.fuel += Math.floor(howMuch/15);
+			console.log(howMuch)
 		}
 	},
 
-	hitCoin: function(ship, coin) {
+    hitCoin: function(ship, coin) {
 	    world.score += 1;
         world.labelScore.text = world.score; 
 		
@@ -241,7 +256,7 @@ var mainState = {
                 world.addOneTrap(WORLD_WIDTH, i*60+10);    
     },
 	
-	addRowOfStuff: function() {
+    addRowOfStuff: function() {
         var what = Math.floor(Math.random()*3)+1;
         
         switch (what)
@@ -257,11 +272,31 @@ var mainState = {
     },
 };
 
+
 setInterval(function(){
     if (world)
-	{
-	    world.fuel = Math.max(0, world.fuel -1);
+    {
+	if(world.fueling) {
+		world.fuelingTimeLeft--;
+		world.labelBlowTimer.text = world.fuelingTimeLeft
+		
+		if(world.fuelingTimeLeft <= 0) {
+			// Start the game
+			world.fueling = false;
+			
+			world.coins.createMultiple(20, 'coin');
+			world.traps.createMultiple(20, 'trap');
+			world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);
+			world.bird.body.gravity.y = 500;
+			world.bird.alive = true;
+			
+			world.labelBlow.text = "";
+			world.labelBlowTimer.text = "";
+		}
+	} else {
+		world.fuel = Math.max(0, world.fuel -1);	
 	}
+    }
 },1000);
 
 game.state.add('main', mainState);  
