@@ -20,9 +20,15 @@ var mainState = {
     preload: function() { 
         game.stage.backgroundColor = '#71c5cf';
 
-        game.load.image('bird', 'assets/bird.png');  
+        game.load.image('ship', 'assets/ship_with_flame_horizontal.png');  
         game.load.image('coin', 'assets/coin.png'); 
 		game.load.image('trap', 'assets/trap.png'); 
+		
+		game.load.image('jewel1', 'assets/jewel1.png');
+		game.load.image('jewel2', 'assets/jewel2.png');
+		game.load.image('jewel3', 'assets/jewel3.png');
+		game.load.image('jewel4', 'assets/jewel4.png');
+		game.load.image('jewel5', 'assets/jewel5.png');
 
         // Load the jump sound
         game.load.audio('jump', 'assets/jump.wav');
@@ -34,27 +40,35 @@ var mainState = {
 		world = this;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        world.coins = game.add.group();
+		world.coins = game.add.group();
         world.coins.enableBody = true;
-        world.coins.createMultiple(20, 'coin');
-
-		world.traps = game.add.group();
+		for(var i=1;i<=5;i++)
+		{
+			var coin = world.coins.create(0,0,'jewel'+i,null,false); 		
+			world.coins.add(coin);
+			coin.anchor.setTo(0.5,0.5);
+		}
+		
+        world.traps = game.add.group();
         world.traps.enableBody = true;
-        world.traps.createMultiple(20, 'trap'); 		
-        
+		for (var i=0;i<20;i++)
+		{
+			var trap = world.traps.create(0,0, 'trap',null,false);
+			world.traps.add(trap);
+			trap.anchor.setTo(0.5,0.5);
+		}
 		world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);           
 		
 		
-        world.bird = world.game.add.sprite(100, 245, 'bird');
-        game.physics.arcade.enable(world.bird);
-        world.bird.body.gravity.y = 500; 
-		world.bird.body.width = 30;
-		world.bird.body.height = 30;
-		world.bird.body.offset.x = 10;
-		world.bird.body.offset.y = 10;
+        world.ship = world.game.add.sprite(100, 245, 'ship');
+        game.physics.arcade.enable(world.ship);
+        world.ship.body.gravity.y = 500; 
+		world.ship.body.width = 100;
+		world.ship.body.height = 40;
+		world.ship.body.offset.x = 10;
 
         // New anchor position
-        world.bird.anchor.setTo(-0.2, 0.5); 
+        world.ship.anchor.setTo(0.5, 0.5); 
  
         var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(world.jump, world); 
@@ -78,65 +92,68 @@ var mainState = {
         if (world.fuel <= 0)
             world.restartGame(); 
 		
-		if (world.bird.y < 0){world.bird.y = WORLD_HEIGHT-50;}
-		if (world.bird.y > WORLD_HEIGHT - 50){world.bird.y = 0;}
+		if (world.ship.y < 0){world.ship.y = WORLD_HEIGHT-50;}
+		if (world.ship.y > WORLD_HEIGHT - 50){world.ship.y = 0;}
 
-        game.physics.arcade.overlap(world.bird, world.coins, world.hitCoin, null, world); 
-		game.physics.arcade.overlap(world.bird, world.traps, world.hitTrap, null, world); 
+        game.physics.arcade.overlap(world.ship, world.coins, world.hitCoin, null, world); 
+		game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world); 
 		
-        // Slowly rotate the bird downward, up to a certain point.
-		var dy = world.bird.body.velocity.y;
+        // Slowly rotate the ship downward, up to a certain point.
+		var dy = world.ship.body.velocity.y;
 		var dy = capVelocity(dy);
-		world.bird.body.velocity.y = dy;
+		world.ship.body.velocity.y = dy;
 		
 		var dy = dy / 400;
 		
 		var targetAngle = Math.round(dy * 75);
-		var da = world.bird.angle - targetAngle;
+		var da = world.ship.angle - targetAngle;
        if (da != 0)
 	   {
 		  if (Math.abs(da) > 4)
 		  {
 	       if (da>0)
-		   {world.bird.angle-=4;}
+		   {world.ship.angle-=4;}
 		   else
-		   {world.bird.angle+=4;}
+		   {world.ship.angle+=4;}
 		   }
 		   else
 		   {
 		   if (da>0)
-		   {world.bird.angle-=1;}
+		   {world.ship.angle-=1;}
 		   else
-		   {world.bird.angle+=1;}
+		   {world.ship.angle+=1;}
 		   
 		   }
 		}		   
     },
+	render:function(){
+		//game.debug.body(world.ship);
+	},
 
     jump: function() {
-        // If the bird is dead, he can't jump
-        if (world.bird.alive == false)
+        // If the ship is dead, he can't jump
+        if (world.ship.alive == false)
             return; 
 
-        world.bird.body.velocity.y = -350;
+        world.ship.body.velocity.y = -350;
 
         // Jump animation
-        game.add.tween(world.bird).to({angle: -20}, 100).start();
+        game.add.tween(world.ship).to({angle: -20}, 100).start();
 
         // Play sound
         world.jumpSound.play();
     },
 	flap:function(howMuch)
 	{
-		if (howMuch != 0  && world.bird.alive)
+		if (howMuch != 0  && world.ship.alive)
 		{
-			var currentAcceleration = capAcceleration(world.bird.body.acceleration.y);
+			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
-			world.bird.body.acceleration.y = newAcceleration;
+			world.ship.body.acceleration.y = newAcceleration;
 		}
 	},
 	
-	hitCoin: function(bird, coin) {
+	hitCoin: function(ship, coin) {
 	    world.score += 1;
         world.labelScore.text = world.score; 
 		
@@ -146,7 +163,7 @@ var mainState = {
 		world.coinSound.play();
     },
 
-    hitTrap: function(bird, trap) {
+    hitTrap: function(ship, trap) {
 		world.boomSound.play();
 		//todo decrease fuel
 
@@ -156,13 +173,13 @@ var mainState = {
 		world.fuel -= 5;
 		return;
 			
-        // If the bird has already hit a coin, we have nothing to do
-        if (world.bird.alive == false)
+        // If the ship has already hit a coin, we have nothing to do
+        if (world.ship.alive == false)
             return;
             
-        // Set the alive property of the bird to false
-        world.bird.alive = false;
-		world.bird.body.acceleration.y = 0;
+        // Set the alive property of the ship to false
+        world.ship.alive = false;
+		world.ship.body.acceleration.y = 0;
 
         // Prevent new coins from appearing
         world.game.time.events.remove(world.timer);
