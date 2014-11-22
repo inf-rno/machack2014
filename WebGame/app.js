@@ -2,8 +2,11 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var raspi = require('raspi-io');
 var five = require("johnny-five");
-var board = new five.Board();
+var board = new five.Board({
+      io: new raspi()
+    });
 
 app.use(express.static(__dirname + '/public'));
 
@@ -22,7 +25,7 @@ setInterval(function(){
 }, 1000);
 
 board.on('ready', function(){
-    var led = new five.Led(13);
+    var led = new five.Led(11);
 	led.strobe();
 });
 
