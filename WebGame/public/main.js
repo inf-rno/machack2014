@@ -81,7 +81,7 @@ var mainState = {
     },
 	flap:function(howMuch)
 	{
-		world.bird.body.velocity.y -= howMuch;
+		world.bird.body.velocity.y = Math.min(350, Math.max(-350, world.bird.body.velocity.y - howMuch));
 	},
 
     hitPipe: function() {
