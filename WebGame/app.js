@@ -45,7 +45,7 @@ setInterval(function(){
 
 board.on('ready', function(){
    var led = new five.Led(11);
-   led.strobe();
+   led.strobe(1000);
 
    var count = 0;
    var previousValue = board.pins[13].value;
