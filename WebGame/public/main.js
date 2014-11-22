@@ -188,6 +188,7 @@ var mainState = {
 
         coin.reset(x, y);
         coin.body.velocity.x = -100;
+		coin.body.angularVelocity = -50;
 		//coin.body.width = 1;
         coin.checkWorldBounds = true;
         coin.outOfBoundsKill = true;
@@ -206,6 +207,7 @@ var mainState = {
 
         trap.reset(x, y);
         trap.body.velocity.x = -100;
+		trap.body.angularVelocity = 50;
 		//trap.body.width = 1;
         trap.checkWorldBounds = true;
         trap.outOfBoundsKill = true;
