@@ -2,8 +2,11 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var raspi = require('raspi-io');
 var five = require("johnny-five");
-//var board = new five.Board();
+var board = new five.Board({
+      io: new raspi()
+    });
 
 app.use(express.static(__dirname + '/public'));
 
@@ -40,9 +43,24 @@ setInterval(function(){
 },100);
 
 
-/*board.on('ready', function(){
-    var led = new five.Led(13);
+board.on('ready', function(){
+   var led = new five.Led(11);
 	led.strobe();
+
+   var count = 0;
+   var previousValue = board.pins[13].value;
+   board.digitalRead(13, function(value) {
+      if(previousValue !== value) {
+            // The user is blowing
+            count++;
+            if(count % 100) { // Filter the output because there is a lot of notification
+              console.log(count);
+            }
+
+            previousValue = value;
+      }
+  })
+
 });
-*/
+
 http.listen(process.env.PORT || 80);
