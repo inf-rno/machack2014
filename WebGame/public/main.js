@@ -101,8 +101,14 @@ var mainState = {
 		// Game not started
 		return;
 	}
-        if (world.fuel <= 0)
-            world.restartGame(); 
+        if (world.fuel <= 0) {
+		world.gameOver = true;
+		world.gameOverTimer = 10;
+		world.labelBlow.text = "Game Over!";
+		world.ship.body.gravity.y = 0;
+		world.ship.body.velocity.y = 0;
+		world.game.time.events.remove(world.timer);
+	}
 		
 		if (world.ship.y < 0){world.ship.y = WORLD_HEIGHT-50;}
 		if (world.ship.y > WORLD_HEIGHT - 50){world.ship.y = 0;}
@@ -276,7 +282,14 @@ var mainState = {
 setInterval(function(){
     if (world)
     {
-	if(world.fueling) {
+	if(world.gameOver) {
+		world.gameOverTimer--;
+		if(world.gameOverTimer <= 0) {
+			world.gameOver = false;
+			world.restartGame();
+		}
+		
+	} else if(world.fueling) {
 		world.fuelingTimeLeft--;
 		world.labelBlowTimer.text = world.fuelingTimeLeft
 		
