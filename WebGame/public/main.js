@@ -1,5 +1,6 @@
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'gameDiv');
 
+var world;
 var mainState = {
 
     preload: function() { 
@@ -12,71 +13,88 @@ var mainState = {
         game.load.audio('jump', 'assets/jump.wav');     
     },
 
-    create: function() { 
+    create: function() {
+		world = this;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.pipes = game.add.group();
-        this.pipes.enableBody = true;
-        this.pipes.createMultiple(20, 'pipe');  
-        this.timer = this.game.time.events.loop(1500, this.addRowOfPipes, this);           
-
-        this.bird = this.game.add.sprite(100, 245, 'bird');
-        game.physics.arcade.enable(this.bird);
-        this.bird.body.gravity.y = 1000; 
+        world.pipes = game.add.group();
+        world.pipes.enableBody = true;
+        world.pipes.createMultiple(20, 'pipe');  
+        world.timer = world.game.time.events.loop(2500, world.addRowOfPipes, world);           
+		
+		
+        world.bird = world.game.add.sprite(100, 245, 'bird');
+        game.physics.arcade.enable(world.bird);
+        world.bird.body.gravity.y = 1000; 
+		world.bird.body.width = 30;
+		world.bird.body.height = 30;
+		world.bird.body.offset.x = 10;
+		world.bird.body.offset.y = 10;
 
         // New anchor position
-        this.bird.anchor.setTo(-0.2, 0.5); 
+        world.bird.anchor.setTo(-0.2, 0.5); 
  
-        var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-        spaceKey.onDown.add(this.jump, this); 
+        var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spaceKey.onDown.add(world.jump, world); 
 
-        this.score = 0;
-        this.labelScore = this.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
+        world.score = 0;
+        world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
 
         // Add the jump sound
-        this.jumpSound = this.game.add.audio('jump');
+        world.jumpSound = world.game.add.audio('jump');
     },
 
-    update: function() {
-        if (this.bird.inWorld == false)
-            this.restartGame(); 
+	update: function() {
+        if (world.bird.inWorld == false)
+            world.restartGame(); 
 
-        game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this); 
-
+        game.physics.arcade.overlap(world.bird, world.pipes, world.hitPipe, null, world); 
+		
         // Slowly rotate the bird downward, up to a certain point.
-        if (this.bird.angle < 20)
-            this.bird.angle += 1;     
+		var dy = world.bird.body.velocity.y;
+		var dy = Math.max(Math.min(dy, 400), -400);
+		var dy = dy / 400;
+		
+		var targetAngle = Math.round(dy * 75);
+		var da = world.bird.angle - targetAngle;
+       if (da != 0)
+	   {
+	       if (da>0)
+		   {world.bird.angle-=4;}
+		   else
+		   {world.bird.angle+=4;}
+		}		   
     },
 
     jump: function() {
         // If the bird is dead, he can't jump
-        if (this.bird.alive == false)
+        if (world.bird.alive == false)
             return; 
 
-        this.bird.body.velocity.y = -350;
+        world.bird.body.velocity.y = -350;
 
         // Jump animation
-        game.add.tween(this.bird).to({angle: -20}, 100).start();
+        game.add.tween(world.bird).to({angle: -20}, 100).start();
 
         // Play sound
-        this.jumpSound.play();
+        world.jumpSound.play();
     },
 
     hitPipe: function() {
         // If the bird has already hit a pipe, we have nothing to do
-        if (this.bird.alive == false)
+        if (world.bird.alive == false)
             return;
             
         // Set the alive property of the bird to false
-        this.bird.alive = false;
+        world.bird.alive = false;
 
         // Prevent new pipes from appearing
-        this.game.time.events.remove(this.timer);
+        world.game.time.events.remove(world.timer);
     
         // Go through all the pipes, and stop their movement
-        this.pipes.forEachAlive(function(p){
+        world.pipes.forEachAlive(function(p){
             p.body.velocity.x = 0;
-        }, this);
+        }, world);
     },
 
     restartGame: function() {
@@ -84,7 +102,7 @@ var mainState = {
     },
 
     addOnePipe: function(x, y) {
-        var pipe = this.pipes.getFirstDead();
+        var pipe = world.pipes.getFirstDead();
 
         pipe.reset(x, y);
         pipe.body.velocity.x = -200;  
@@ -97,10 +115,10 @@ var mainState = {
         
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole +1) 
-                this.addOnePipe(400, i*60+10);   
+                world.addOnePipe(400, i*60+10);   
     
-        this.score += 1;
-        this.labelScore.text = this.score;  
+        world.score += 1;
+        world.labelScore.text = world.score;  
     },
 };
 
