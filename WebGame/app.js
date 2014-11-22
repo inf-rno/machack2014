@@ -45,7 +45,7 @@ setInterval(function(){
 
 board.on('ready', function(){
    var led = new five.Led(11);
-	led.strobe();
+   led.strobe();
 
    var count = 0;
    var previousValue = board.pins[13].value;
@@ -53,7 +53,8 @@ board.on('ready', function(){
       if(previousValue !== value) {
             // The user is blowing
             count++;
-            if(count % 100 === 0) { // Filter the output because there is a lot of notification
+            if(count % 10 === 0) { // Filter the output because there is a lot of notification
+              flowMeterPulsed(10);
               console.log("Blowing: " + count);
             }
 
