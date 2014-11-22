@@ -27,7 +27,7 @@
 		  var dx = e.movementX;
 		  var dy = e.movementY;
 		  var d = Math.round(Math.sqrt(Math.pow(dx, 2)+Math.pow(dy,2)));
-		  socket.emit('simulate', {value:d});
+		  socket.emit('simulate', {value:d/10});
 		}
 	  
 		socket.on('flow', function(msg){
