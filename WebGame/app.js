@@ -29,7 +29,7 @@ function flowMeterPulsed(howManyPulses)
 	currentFlow += _pulses;
 	setTimeout(function(){
 		currentFlow -= _pulses;
-	},500);
+	},250);
 }
 
 var lastValue = -1;
