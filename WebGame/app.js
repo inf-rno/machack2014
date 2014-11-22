@@ -15,18 +15,30 @@ io.on('connection', function(socket){
 	
 	socket.on('simulate', function(msg)
 	{
-	
-		console.log("simulating "+JSON.stringify(msg));
-	    io.emit('flow', msg);
+		 flowMeterPulsed(msg.value);
 	});
 });
 
-var count =0;
+var currentFlow = 0;
+function flowMeterPulsed(howManyPulses)
+{
+	var _pulses = howManyPulses || 1;
+	currentFlow += _pulses;
+	setTimeout(function(){
+		currentFlow -= _pulses;
+	},500);
+}
+
+var lastValue = -1;
 setInterval(function(){
-	count++;
-   io.emit('count', {'value':count});
-   console.log(count);
-}, 1000);
+	io.emit('flow', {value:currentFlow});
+	if (currentFlow != lastValue)
+	{
+		console.log(currentFlow);
+		lastValue = currentFlow;
+	}
+},100);
+
 
 /*board.on('ready', function(){
     var led = new five.Led(13);

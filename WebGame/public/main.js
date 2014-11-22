@@ -1,5 +1,10 @@
 var game = new Phaser.Game(400, 490, Phaser.AUTO, 'gameDiv');
 
+function capVelocity(value)
+{ 
+	return Math.min(400, Math.max(-400, value));
+}
+
 var world;
 var mainState = {
 
@@ -52,7 +57,7 @@ var mainState = {
 		
         // Slowly rotate the bird downward, up to a certain point.
 		var dy = world.bird.body.velocity.y;
-		var dy = Math.max(Math.min(dy, 400), -400);
+		var dy = capVelocity(dy);
 		var dy = dy / 400;
 		
 		var targetAngle = Math.round(dy * 75);
@@ -92,7 +97,12 @@ var mainState = {
     },
 	flap:function(howMuch)
 	{
-		world.bird.body.velocity.y = Math.min(350, Math.max(-350, world.bird.body.velocity.y - howMuch));
+		if (howMuch != 0  && world.bird.alive)
+		{
+			var currentVelocity = capVelocity(world.bird.body.velocity.y);
+			var newVelocity = capVelocity(currentVelocity - howMuch);
+			world.bird.body.velocity.y = newVelocity;
+		}
 	},
 
     hitPipe: function() {

@@ -27,15 +27,15 @@
 		  var dx = e.movementX;
 		  var dy = e.movementY;
 		  var d = Math.round(Math.sqrt(Math.pow(dx, 2)+Math.pow(dy,2)));
-		  socket.emit('simulate', {value:d*2});
+		  socket.emit('simulate', {value:d});
 		}
 	  
 		socket.on('flow', function(msg){
-		if (world)
-		{
-			world.flap(msg.value);
-		}
-});
+			if (world)
+			{
+				world.flap(msg.value);
+			}
+		});
   </script>
 </body>
 
