@@ -29,7 +29,7 @@ function flowMeterPulsed(howManyPulses)
 	currentFlow += _pulses;
 	setTimeout(function(){
 		currentFlow -= _pulses;
-	},500);
+	},250);
 }
 
 var lastValue = -1;
@@ -37,15 +37,25 @@ setInterval(function(){
 	io.emit('flow', {value:currentFlow});
 	if (currentFlow != lastValue)
 	{
+            // Turn a LED on while the player is blowing
+            if(statusLED) {
+                  if(currentFlow>10) {
+                        statusLED.on();
+                  } else {
+                        statusLED.off();
+                  }
+            }
 		console.log(currentFlow);
 		lastValue = currentFlow;
 	}
 },100);
 
-
+var statusLED;
 board.on('ready', function(){
    var led = new five.Led(11);
-   led.strobe();
+   statusLED = new five.Led(15);
+   statusLED.off();
+   led.strobe(1000);
 
    var count = 0;
    var previousValue = board.pins[13].value;
