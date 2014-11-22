@@ -12,10 +12,24 @@ board.on('ready', function() {
   (new five.Led(11)).strobe(); // PIN GPIO17
 
   // Create a new `sensor` hardware instance.
-  var sensor = new five.Sensor("13");
+  /*var sensor = new five.Sensor("13");
 
   sensor.scale([ 0, 10 ]).on("data", function() {
     console.log( this.value );
-  });
+  });*/
+  
+  var count = 0;
+  var previousValue = board.pins[13].value;
+  board.digitalRead(13, function(value) {
+    if(previousValue !== value) {
+      // The user is blowing
+      count++;
+      if(count % 100) { // Filter the output because there is a lot of notification
+        console.log(count);
+      }
+
+      previousValue = value;
+    }
+  })
   
 });
