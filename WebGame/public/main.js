@@ -57,7 +57,6 @@ var mainState = {
 			world.traps.add(trap);
 			trap.anchor.setTo(0.5,0.5);
 		}
-		world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);           
 		
 		
         world.ship = world.game.add.sprite(100, 245, 'ship');
@@ -74,7 +73,9 @@ var mainState = {
         spaceKey.onDown.add(world.jump, world); 
 
         world.score = 0;
-        world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
+        world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
+	world.labelScore = world.game.add.text(380, 300, "0", { font: "36px Arial", fill: "#ffffff" }); // Avenir Heavy
+	world.labelScore.text = "Blow to fuel up!"
 
 		world.fuel = 60;
         world.labelFuel = world.game.add.text(20, 80, "0", { font: "30px Arial", fill: "#ffffff" });  
@@ -96,7 +97,7 @@ var mainState = {
 		if (world.ship.y > WORLD_HEIGHT - 50){world.ship.y = 0;}
 
         game.physics.arcade.overlap(world.ship, world.coins, world.hitCoin, null, world); 
-		game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world); 
+		game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world);
 		
         // Slowly rotate the ship downward, up to a certain point.
 		var dy = world.ship.body.velocity.y;
@@ -152,7 +153,7 @@ var mainState = {
 			world.ship.body.acceleration.y = newAcceleration;
 		}
 	},
-	
+
 	hitCoin: function(ship, coin) {
 	    world.score += 1;
         world.labelScore.text = world.score; 
@@ -202,13 +203,14 @@ var mainState = {
 
     addOnecoin: function(x, y) {
         var coin = world.coins.getFirstDead();
-
-        coin.reset(x, y);
-        coin.body.velocity.x = -100;
+	if(coin) {
+		coin.reset(x, y);
+		coin.body.velocity.x = -100;
 		coin.body.angularVelocity = -50;
-		//coin.body.width = 1;
-        coin.checkWorldBounds = true;
-        coin.outOfBoundsKill = true;
+			//coin.body.width = 1;
+		coin.checkWorldBounds = true;
+		coin.outOfBoundsKill = true;	
+	}
     },
 
     addRowOfCoins: function() {
@@ -219,15 +221,16 @@ var mainState = {
                 world.addOnecoin(WORLD_WIDTH, i*60+10);    
     },
 	
-	addOneTrap: function(x, y) {
+    addOneTrap: function(x, y) {
         var trap = world.traps.getFirstDead();
-
-        trap.reset(x, y);
-        trap.body.velocity.x = -100;
+	if(trap) {
+		trap.reset(x, y);
+		trap.body.velocity.x = -100;
 		trap.body.angularVelocity = 50;
-		//trap.body.width = 1;
-        trap.checkWorldBounds = true;
-        trap.outOfBoundsKill = true;
+			//trap.body.width = 1;
+		trap.checkWorldBounds = true;
+		trap.outOfBoundsKill = true;	
+	}
     },
 
     addRowOfTraps: function() {
