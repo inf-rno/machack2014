@@ -62,6 +62,10 @@ var mainState = {
         world.score = 0;
         world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });  
 
+		world.fuel = 60;
+        world.labelFuel = world.game.add.text(20, 80, "0", { font: "30px Arial", fill: "#ffffff" });  
+
+		
         // Add the jump sound
         world.jumpSound = world.game.add.audio('jump');
 		world.coinSound = world.game.add.audio('coin');
@@ -69,8 +73,10 @@ var mainState = {
     },
 
 	update: function() {
-        //if (world.bird.inWorld == false)
-        //    world.restartGame(); 
+		world.labelFuel.text = world.fuel;
+	
+        if (world.fuel <= 0)
+            world.restartGame(); 
 		
 		if (world.bird.y < 0){world.bird.y = WORLD_HEIGHT-50;}
 		if (world.bird.y > WORLD_HEIGHT - 50){world.bird.y = 0;}
@@ -146,6 +152,8 @@ var mainState = {
 
 		trap.body.x = -100;
 		trap.alive = false;
+		
+		world.fuel -= 5;
 		return;
 			
         // If the bird has already hit a coin, we have nothing to do
@@ -226,6 +234,13 @@ var mainState = {
 		}		
     },
 };
+
+setInterval(function(){
+    if (world)
+	{
+	    world.fuel = Math.max(0, world.fuel -1);
+	}
+},1000);
 
 game.state.add('main', mainState);  
 game.state.start('main'); 
