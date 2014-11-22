@@ -24,7 +24,7 @@ board.on('ready', function() {
     if(previousValue !== value) {
       // The user is blowing
       count++;
-      if(count % 100) { // Filter the output because there is a lot of notification
+      if(count % 100 === 0) { // Filter the output because there is a lot of notification
         console.log(count);
       }
 
