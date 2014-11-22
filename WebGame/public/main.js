@@ -1,8 +1,8 @@
-var game = new Phaser.Game(1024, 600, Phaser.AUTO, 'gameDiv');
-
 var FLOW_TO_ACCEL_MULTIPLIER = 15;
 var WORLD_WIDTH = 1024;
-var WORLD_HEIGHT = 600;
+var WORLD_HEIGHT = 800;
+
+var game = new Phaser.Game(WORLD_WIDTH, WORLD_HEIGHT, Phaser.AUTO, 'gameDiv');
 
 function capVelocity(value)
 { 
@@ -29,6 +29,8 @@ var mainState = {
 		game.load.image('jewel3', 'assets/jewel3.png');
 		game.load.image('jewel4', 'assets/jewel4.png');
 		game.load.image('jewel5', 'assets/jewel5.png');
+		
+		game.load.image('background', 'assets/milkyway_seamless.jpg');
 
         // Load the jump sound
         game.load.audio('jump', 'assets/jump.wav');
@@ -39,6 +41,9 @@ var mainState = {
     create: function() {
 		world = this;
         game.physics.startSystem(Phaser.Physics.ARCADE);
+		
+		world.background = game.add.tileSprite(0,0,1920,800,'background');
+		world.background.autoScroll(-50,0);
 
 		world.coins = game.add.group();
         world.coins.enableBody = true;
@@ -68,7 +73,7 @@ var mainState = {
 
         // New anchor position
         world.ship.anchor.setTo(0.5, 0.5);
-	world.ship.alive = false; // Game not running yet
+		world.ship.alive = false; // Game not running yet
  
         var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(world.jump, world); 
@@ -76,15 +81,15 @@ var mainState = {
         world.score = 0;
         world.labelScore = world.game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
 	
-	world.fueling = true;
-	world.fuelingTimeLeft = 10;
-	world.labelBlow = world.game.add.text(380, 270, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
-	world.labelBlow.text = "Blow to fuel up!"
-	
-	world.labelBlowTimer = world.game.add.text(470, 320, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
-	world.labelBlowTimer.text = world.fuelingTimeLeft
+		world.fueling = true;
+		world.fuelingTimeLeft = 10;
+		world.labelBlow = world.game.add.text(380, 270, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
+		world.labelBlow.text = "Blow to fuel up!"
+		
+		world.labelBlowTimer = world.game.add.text(470, 320, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
+		world.labelBlowTimer.text = world.fuelingTimeLeft
 
-	world.fuel = 0; // Increment to fuel up
+		world.fuel = 0; // Increment to fuel up
         world.labelFuel = world.game.add.text(20, 80, "0", { font: "30px Arial", fill: "#ffffff" });  
 
 		
