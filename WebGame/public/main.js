@@ -2,7 +2,7 @@ var game = new Phaser.Game(1024, 600, Phaser.AUTO, 'gameDiv');
 
 var FLOW_TO_ACCEL_MULTIPLIER = 15;
 var WORLD_WIDTH = 1024;
-var WORLD_HEIGHT = 800;
+var WORLD_HEIGHT = 600;
 
 function capVelocity(value)
 { 

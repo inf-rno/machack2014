@@ -32,9 +32,11 @@ function flowMeterPulsed(howManyPulses)
 	},250);
 }
 
+var tickCount = 0;
 var lastValue = -1;
 setInterval(function(){
 	io.emit('flow', {value:currentFlow});
+        tickCount++;
 	if (currentFlow != lastValue)
 	{
             // Turn a LED on while the player is blowing
@@ -45,7 +47,11 @@ setInterval(function(){
                         statusLED.off();
                   }
             }
-		console.log(currentFlow);
+            
+            if(tickCount%10===0) {
+                  console.log(currentFlow);
+            }
+		
 		lastValue = currentFlow;
 	}
 },100);
@@ -57,17 +63,11 @@ board.on('ready', function(){
    statusLED.off();
    led.strobe(1000);
 
-   var count = 0;
    var previousValue = board.pins[13].value;
    board.digitalRead(13, function(value) {
       if(previousValue !== value) {
             // The user is blowing
-            count++;
-            if(count % 10 === 0) { // Filter the output because there is a lot of notification
-              flowMeterPulsed(10);
-              console.log("Blowing: " + count);
-            }
-
+            flowMeterPulsed(1);
             previousValue = value;
       }
   })
