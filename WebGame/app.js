@@ -32,10 +32,31 @@ function flowMeterPulsed(howManyPulses)
 	},250);
 }
 
+var fakingZero = false;
+var maxFlow = 0;
+var NO_FLOW = 15;
 var tickCount = 0;
 var lastValue = -1;
 setInterval(function(){
-	io.emit('flow', {value:currentFlow});
+        if(maxFlow < currentFlow) {
+            // We have a new max
+            maxFlow = currentFlow;
+            fakingZero = false;
+        } else if(fakingZero && currentFlow >= maxFlow*0.50) {
+            fakingZero = false;
+            maxFlow = currentFlow;
+        }
+        var emitedFlow = currentFlow;
+        if(currentFlow < NO_FLOW) {
+            emitedFlow = 0;
+            maxFlow = 0;
+            fakingZero = false;
+        } else if (currentFlow < maxFlow*0.50) {
+            emitedFlow = 0;
+            fakingZero = true; // Fake 0 until we go out of the zone
+        }
+        
+	io.emit('flow', {value:emitedFlow});
         tickCount++;
 		/*
 	if (currentFlow != lastValue)
