@@ -328,9 +328,9 @@ Cardboard.prototype.resize = function() {
     if (Collectible.Sounds.game._ready) {
       Collectible.Sounds.game.gain.gain.value = s;
     }
-    if (Collectible.Sounds.scoreboard._ready) {
-      Collectible.Sounds.scoreboard.gain.gain.value = s;
-    }
+    //if (Collectible.Sounds.scoreboard._ready) {
+    //  Collectible.Sounds.scoreboard.gain.gain.value = s;
+    //}
     if (Collectible.Sounds.coin._ready) {
       Collectible.Sounds.coin.gain.gain.value = s;
     }

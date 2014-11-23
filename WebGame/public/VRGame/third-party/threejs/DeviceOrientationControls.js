@@ -140,14 +140,13 @@ THREE.DeviceOrientationControls = function(object) {
       this.object.quaternion.multiply(this.orientationQuaternion);
 
       if (this.autoForward) {
-        this.object.position.z += this.movementSpeed / 50;
+        this.object.position.x += this.movementSpeed / 50;
       }
 
       if (this.autoAlign && this.alpha !== 0) {
 
         this.autoAlign = false;
 
-        this.align();
 
       }
 

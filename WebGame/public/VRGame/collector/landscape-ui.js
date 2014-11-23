@@ -263,7 +263,7 @@
       // fueling stage fueling
       ctx.save();
       ctx.font = '800 ' + ((fontSize * (15 / 24))) + 'px Sniglet, sans-serif';
-      ctx.fillText('Blow to fuel up!', 250, 4.5 * lineHeight - fontSize / 2);
+      ctx.fillText('Blow to fuel up! ' + Math.round((5000-(now - this.startTime))/1000), 250, 4.5 * lineHeight - fontSize / 2);
       
       ctx.fillText('Duration ' + Math.round(this.duration/1000) + " sec", 250, 5.5 * lineHeight - fontSize / 2);
       
