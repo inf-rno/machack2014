@@ -223,7 +223,7 @@ Cardboard.prototype.resize = function() {
       return;
     }
 
-    this._velocity = 1;
+    this._velocity = 0.4;
     this._jumping = true;
 
     if (this.ui.over) {

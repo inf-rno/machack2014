@@ -183,7 +183,9 @@ var mainState = {
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
-		} else if (world.fueling && howMuch) {
+		} else if (world.ship.alive) {
+			world.ship.body.acceleration.y = 0;
+		} else if (world.fueling && howMuch > 0) {
 			// Increment fuel
 			world.fuel += Math.floor(howMuch/15);
 			console.log(howMuch)
@@ -208,6 +210,9 @@ var mainState = {
 		trap.alive = false;
 		
 		world.fuel -= 5;
+		if(world.fuel < 0) {
+			world.fuel = 0;
+		}
 		return;
 			
         // If the ship has already hit a coin, we have nothing to do
@@ -322,7 +327,7 @@ setInterval(function(){
 			world.labelBlow.text = "";
 			world.labelBlowTimer.text = "";
 		}
-	} else {
+	} else if(world.fuel > 0) {
 		world.fuel = Math.max(0, world.fuel -1);	
 	}
     }
