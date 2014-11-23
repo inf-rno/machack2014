@@ -119,7 +119,7 @@
     this.cols = {
       min: Infinity,
       max: -Infinity,
-      value: rows
+      value: cols
     };
 
     this.items = {};
@@ -284,7 +284,7 @@
 
     for (var i = 0; i < rows; i++) {
 
-      var x = this.bin * i - (this.bin * (rows)) / 2;
+      var x = this.bin * i;
 
       if (origin) {
         x += Math.round(origin.x / this.bin) * this.bin;
@@ -297,11 +297,7 @@
 
       for (var j = 0; j < cols; j++) {
 
-        var z = this.bin * j - (this.bin * (cols)) / 2;
-
-        if (origin) {
-          z += Math.round(origin.z / this.bin) * this.bin;
-        }
+        var z = 0;
 
         this.cols.min = Math.min(z, this.cols.min);
         this.cols.max = Math.max(z, this.cols.max);

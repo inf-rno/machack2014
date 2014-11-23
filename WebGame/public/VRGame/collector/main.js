@@ -155,7 +155,7 @@ Cardboard.prototype.resize = function() {
 
     this.particles = new ParticleField(this.cameras.firstPerson, 50, 20, 0.5, 4);
 
-    this.collectible = new Collectible(0.66, this.cameras.firstPerson.far, 10, 10, 10);
+    this.collectible = new Collectible(0.66, this.cameras.firstPerson.far, 10, 10, 1);
     this.ui = new UI(this.collectible);
     this.explosion = new Explosion(100);
     this.collectible.explosion = this.explosion;
