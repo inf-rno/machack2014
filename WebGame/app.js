@@ -22,12 +22,14 @@ io.on('connection', function(socket){
 	});
 });
 
+var unnotifiedPulses = 0;
 var currentFlow = 0;
 function flowMeterPulsed(howManyPulses)
 {
 	var _pulses = howManyPulses || 1;
-	currentFlow += _pulses;
-	setTimeout(function(){
+        unnotifiedPulses += _pulses;
+        currentFlow += _pulses;
+        setTimeout(function(){
 		currentFlow -= _pulses;
 	},250);
 }
@@ -56,7 +58,8 @@ setInterval(function(){
             fakingZero = true; // Fake 0 until we go out of the zone
         }
         
-	io.emit('flow', {value:emitedFlow});
+	io.emit('flow', {value:emitedFlow, pulses:unnotifiedPulses});
+        unnotifiedPulses = 0;
         tickCount++;
 
 	if (currentFlow != lastValue)
