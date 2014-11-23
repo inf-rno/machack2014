@@ -1,0 +1,6 @@
+@font-face {
+  font-family: 'Sniglet';
+  font-style: normal;
+  font-weight: 800;
+  src: local('Sniglet ExtraBold'), local('Sniglet-ExtraBold'), url(http://fonts.gstatic.com/s/sniglet/v7/1ZHjsYpklbehZSiZpN0bvhsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
