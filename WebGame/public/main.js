@@ -32,6 +32,8 @@ var mainState = {
 		game.load.image('jewel5', 'assets/jewel5.png');
 		
 		game.load.image('background', 'assets/milkyway_seamless.jpg');
+		game.load.image('background2', 'assets/space_cloud.png');
+		game.load.image('background3', 'assets/space_cloud_small.png');
 
         // Load the jump sound
         game.load.audio('jump', 'assets/jump.wav');
@@ -43,8 +45,14 @@ var mainState = {
 		world = this;
         game.physics.startSystem(Phaser.Physics.ARCADE);
 		
-		world.background = game.add.tileSprite(0,0,1920,800,'background');
-		world.background.autoScroll(-50,0);
+		world.background = game.add.tileSprite(0,0,WORLD_WIDTH,WORLD_HEIGHT,'background');
+		world.background.autoScroll(-10,0);
+		
+		world.background2 = game.add.tileSprite(0,0,WORLD_WIDTH,WORLD_HEIGHT,'background2');
+		world.background2.autoScroll(-30,0);
+		
+		world.background3 = game.add.tileSprite(0,0,WORLD_WIDTH,WORLD_HEIGHT,'background3');
+		world.background3.autoScroll(-20,0);
 
 		world.coins = game.add.group();
         world.coins.enableBody = true;
