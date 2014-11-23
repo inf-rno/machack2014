@@ -30,7 +30,7 @@
 
     this.size = size;
 
-	var geometry = new THREE.PlaneGeometry(10, 10);
+	var geometry = new THREE.SphereGeometry(20, 120, 120);
 	var uniforms = {
 	  texture: { type: 't', value: loadTexture('./images/cockpit.png') }
 	};
@@ -43,6 +43,9 @@
 	});
 	
 	this.Hud = new THREE.Mesh(geometry, material);
+	this.Hud.scale.set(-1, 1, 1);
+	this.Hud.eulerOrder = 'XZY';
+	this.Hud.renderDepth = 1.0;
 	
 	this.add(this.Hud);
 	scene.add(this.Hud);
@@ -60,9 +63,9 @@
     var v = camera.position;
 	this.Hud.position.x = fpv.x;
 	this.Hud.position.y = fpv.y;
-	this.Hud.position.z = fpv.z + 10;
+	this.Hud.position.z = fpv.z;
 	
-	this.Hud.quaternion.copy( camera.quaternion );
+	//this.Hud.quaternion.copy( camera.quaternion );
 	//console.log("trying to update cockpit");
     
 
