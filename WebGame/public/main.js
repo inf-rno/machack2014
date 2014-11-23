@@ -133,7 +133,7 @@ var mainState = {
 		world.ship.alive = false;
 		world.ship.loadTexture('ship_idle', 0);
 		world.gameOverTimer = 10;
-		world.gameOverLabel.text = "Game Over! " + Math.round(world.gamePulses/7.5/60.0*100)/100 + " liters, max intensity " + world.maxIntensity;
+		world.gameOverLabel.text = "Game Over! " + Math.round(world.gamePulses/7.5/60.0*100)/100 + " liters, max intensity " + Math.round(world.maxIntensity);
 		world.ship.body.gravity.y = 0;
 		world.ship.body.acceleration.y = 0;
 		world.ship.loadTexture('ship_idle', 0);
@@ -223,7 +223,6 @@ var mainState = {
 		} else if (world.fueling && howMuch > 0) {
 			// Increment fuel
 			world.fuel += Math.floor(howMuch/15);
-			console.log(howMuch)
 		}
 	},
 

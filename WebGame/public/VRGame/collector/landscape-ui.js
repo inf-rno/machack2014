@@ -58,15 +58,18 @@
 
     var width = two.width - (two.width / factor) * 2;
 
+    // Fuel gage background
     var backline = two.makeLine(two.width / factor, two.height - two.height / factor, two.width - two.width / factor, two.height - two.height / factor);
     backline.noFill().stroke = color;
     backline.linewidth = 6;
     backline.cap = 'round';
 
+    // Fuel gage meter initial state
     var baseline = two.makeLine(two.width / factor, two.height - two.height / factor, two.width - two.width / factor, two.height - two.height / factor);
     baseline.noFill().stroke = 'rgb(85, 98, 180)';
     baseline.linewidth = 2;
     baseline.cap = 'round';
+    baseline.vertices[1].x = -43; // Make the fuel gage start empty
 
     var a = two.makePolygon(1, 6, 1, 1, 6, 1, true);
     a.linewidth = 2;
@@ -138,10 +141,10 @@
       scope.onCollect(coin);
     };
 
-    this.duration = (duration || 42) * 1000;
+    this.duration = 0; // Set game length to 42 seconds
 
     this.collectible.ready(function() {
-      scope.start();
+      scope.start(); // Start fueling
     });
 
   };
@@ -173,13 +176,14 @@
     Collectible.Sounds.game.play();
     Collectible.Sounds.scoreboard.stop();
     this.over = false;
+    this.fueling = true;
     this._init = false;
     return this;
 
   };
 
   UI.prototype.restart = function() {
-
+    // Called when R is pressed
     this._scale = 0;
     this._endScale = 1;
     this._scaleDest = 1;
@@ -245,16 +249,33 @@
     var now = Date.now();
     var pct = (now - this.startTime) / this.duration;
 
-    if (pct > 1 && !this.over) {
+    if (pct > 1 && !this.over && !this.fueling) {
       this.end();
     }
-
-    timer.set(1 - pct);
-
+    
     // Update Two.js elements
     two.update();
 
     ctx.fillStyle = color;
+    
+    if (this.fueling) {
+      // fueling stage fueling
+      ctx.save();
+      ctx.font = '800 ' + ((fontSize * (15 / 24))) + 'px Sniglet, sans-serif';
+      ctx.fillText('Blow to fuel up!', 250, 4.5 * lineHeight - fontSize / 2);
+      
+      ctx.fillText('Duration ' + Math.round(this.duration/1000) + " sec", 250, 5.5 * lineHeight - fontSize / 2);
+      
+      if( (now - this.startTime) > 5000) {
+        // Start the game!
+        this.fueling = false;
+        this.startTime = Date.now();
+      }
+      
+      ctx.restore();
+    } else {
+      timer.set(1 - pct); // Update time gauge 
+    }
 
     if (this._init) {
 
@@ -329,7 +350,7 @@
       }
 
       ctx.font = '800 ' + ((fontSize * (15 / 24))) + 'px Sniglet, sans-serif';
-      ctx.fillText('LOOK DOWN TO RESTART', 0, 4.5 * lineHeight - fontSize / 2);
+      ctx.fillText('PRESS R TO RESTART', 0, 4.5 * lineHeight - fontSize / 2);
       ctx.restore();
 
     }

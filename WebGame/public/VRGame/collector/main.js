@@ -171,7 +171,7 @@ Cardboard.prototype.resize = function() {
 	
 	var geometry = new THREE.SphereGeometry(30, 60, 40);
 	var uniforms = {
-	  texture: { type: 't', value: loadTexture('/../assets/milkyway_seamless.jpg') }
+	  texture: { type: 't', value: loadTexture('./../assets/milkyway_seamless.jpg') }
 	};
 
 	var material = new THREE.ShaderMaterial( {
@@ -265,7 +265,9 @@ Cardboard.prototype.resize = function() {
 
     //todo: Now what?
     console.log(msg.value);
-	if (!this.ui.over)
+	if(this.ui.fueling) {
+	  this.ui.duration += Math.floor(msg.value*1000/20);
+	} else if (!this.ui.over)
 	{
 		this._velocity += msg.value / 800;
 		this._jumping = true;
