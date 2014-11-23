@@ -29,6 +29,8 @@ THREE.FirstPersonControls = function ( object, domElement ) {
   this.verticalMin = 0;
   this.verticalMax = Math.PI;
 
+  this.fovMaxAngle = 60;
+
   this.autoSpeedFactor = 0.0;
 
   this.mouseX = 0;
@@ -209,7 +211,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
     var actualMoveSpeed = delta * this.movementSpeed;
 
-    if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) this.object.translateZ( - ( actualMoveSpeed + this.autoSpeedFactor ) );
+    if ( this.moveForward || ( this.autoForward && !this.moveBackward ) ) this.object.position.x += ( actualMoveSpeed + this.autoSpeedFactor );
     if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
 
     if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
@@ -234,7 +236,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
     }
 
-    this.lon += this.mouseX * actualLookSpeed;
+    this.lon = Math.min(Math.max(this.lon + this.mouseX * actualLookSpeed, -this.fovMaxAngle), this.fovMaxAngle);
     if( this.lookVertical ) this.lat -= this.mouseY * actualLookSpeed * verticalLookRatio;
 
     this.lat = Math.max( - 85, Math.min( 85, this.lat ) );

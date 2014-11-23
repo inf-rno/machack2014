@@ -33,6 +33,9 @@ THREE.DeviceOrientationControls = function(object) {
   this.gamma = 0;
   this.orient = 0;
 
+  this.fovMaxAngle = 60;
+  this.fovAlphaInitial = undefined;
+
   this.alignQuaternion = new THREE.Quaternion();
   this.orientationQuaternion = new THREE.Quaternion();
 
@@ -97,8 +100,16 @@ THREE.DeviceOrientationControls = function(object) {
         this.autoAlign = true;
       }
 
-      this.alpha = this.deviceOrientation.gamma ?
+      // FIXME: maybe reset this when restarting
+      if(this.fovAlphaInitial === undefined && this.deviceOrientation.alpha) {
+        this.fovAlphaInitial = this.deviceOrientation.alpha;
+      }
+
+      this.alpha = this.deviceOrientation.alpha ?
         THREE.Math.degToRad(this.deviceOrientation.alpha) : 0; // Z
+        // TODO: This makes it so you can only look part of the way left/right (ie not 360 degrees), but it flips the view when the phone is pointed up?
+        //THREE.Math.degToRad(Math.min(Math.max((this.deviceOrientation.alpha - this.fovAlphaInitial), -this.fovMaxAngle), this.fovMaxAngle)) : 0; // Z
+
       this.beta = this.deviceOrientation.beta ?
         THREE.Math.degToRad(this.deviceOrientation.beta) : 0; // X'
       this.gamma = this.deviceOrientation.gamma ?
@@ -129,14 +140,7 @@ THREE.DeviceOrientationControls = function(object) {
       this.object.quaternion.multiply(this.orientationQuaternion);
 
       if (this.autoForward) {
-
-        tempVector3
-          .set(0, 0, -1)
-          .applyQuaternion(this.object.quaternion, 'ZXY')
-          .setLength(this.movementSpeed / 50); // TODO: why 50 :S
-
-        this.object.position.add(tempVector3);
-
+        this.object.position.z += this.movementSpeed / 50;
       }
 
       if (this.autoAlign && this.alpha !== 0) {
