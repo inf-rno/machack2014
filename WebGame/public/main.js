@@ -20,7 +20,8 @@ var mainState = {
     preload: function() { 
         game.stage.backgroundColor = '#71c5cf';
 
-        game.load.image('ship', 'assets/ship_with_flame_horizontal.png');  
+        game.load.image('ship', 'assets/ship_with_flame_horizontal.png');
+        game.load.image('ship_idle', 'assets/ship_horizontal.png');
         game.load.image('coin', 'assets/coin.png'); 
 		game.load.image('trap', 'assets/trap.png'); 
 		
@@ -64,7 +65,7 @@ var mainState = {
 		}
 		
 		
-        world.ship = world.game.add.sprite(100, 245, 'ship');
+        world.ship = world.game.add.sprite(100, 245, 'ship_idle');
         game.physics.arcade.enable(world.ship);
         world.ship.body.gravity.y = 0; 
 		world.ship.body.width = 100;
@@ -74,6 +75,7 @@ var mainState = {
         // New anchor position
         world.ship.anchor.setTo(0.5, 0.5);
 		world.ship.alive = false; // Game not running yet
+		world.ship.loadTexture('ship_idle', 0);
  
         var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(world.jump, world); 
@@ -109,10 +111,12 @@ var mainState = {
         if (world.fuel <= 0) {
 		world.gameOver = true;
 		world.ship.alive = false;
+		world.ship.loadTexture('ship_idle', 0);
 		world.gameOverTimer = 10;
 		world.labelBlow.text = "Game Over!";
 		world.ship.body.gravity.y = 0;
 		world.ship.body.acceleration.y = 0;
+		world.ship.loadTexture('ship_idle', 0);
 		world.ship.body.velocity.y = 0;
 		world.game.time.events.remove(world.timer);
 	}
@@ -183,8 +187,15 @@ var mainState = {
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
+			
+			if(world.ship.body.acceleration.y < 0) {
+			    world.ship.loadTexture('ship', 0);	
+			} else {
+			    world.ship.loadTexture('ship_idle', 0);
+			}
 		} else if (world.ship.alive) {
 			world.ship.body.acceleration.y = 0;
+			world.ship.loadTexture('ship_idle', 0);
 		} else if (world.fueling && howMuch > 0) {
 			// Increment fuel
 			world.fuel += Math.floor(howMuch/15);
@@ -323,6 +334,7 @@ setInterval(function(){
 			world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);
 			world.ship.body.gravity.y = 500;
 			world.ship.alive = true;
+			world.ship.loadTexture('ship_idle', 0);
 			
 			world.labelBlow.text = "";
 			world.labelBlowTimer.text = "";
