@@ -314,10 +314,6 @@ Cardboard.prototype.resize = function() {
 
     this.vector.set(0, 0, -1).applyQuaternion(fp.quaternion);
 
-    if (this.vector.y < -0.95 && this.__ready) {
-      this.jump();
-    }
-
     this.collectible.update(fp);
 
     this.ui.update(fp);
