@@ -142,6 +142,8 @@
 
   Collectible.prototype.collected = 0;
 
+  Collectible.prototype.maxHeight = 20;
+
   Collectible.prototype._ready = false;
 
   Collectible.prototype._onCollect = function() {};
@@ -315,6 +317,7 @@
         coin.shadow.visible = true;
 
         coin.position.x = x;
+        coin.position.y = Math.random() * this.maxHeight;
         coin.position.z = z;
 
         coins[z] = coin;

@@ -282,7 +282,7 @@ Cardboard.prototype.resize = function() {
     fpv.y += this._velocity;
     fpv.y = Math.max(fpv.y, 0);
 
-    fpv.y = Math.min(fpv.y, 20);
+    fpv.y = Math.min(fpv.y, this.collectible.maxHeight);
 
     if (fpv.y <= 0) {
       fpv.y = 0;
