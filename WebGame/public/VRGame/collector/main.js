@@ -262,6 +262,9 @@ Cardboard.prototype.resize = function() {
   };
   
   Collector.prototype.fly = function(msg) {
+    if(!msg || !msg.value || msg.value <= 0) {
+      return;
+    }
 
     //todo: Now what?
     console.log(msg.value);
@@ -296,7 +299,7 @@ Cardboard.prototype.resize = function() {
     var fp = this.cameras.firstPerson;
     var fpv = fp.position;
 	
-    if (this.ui.over || this.restarting) {
+    if (this.ui.over || this.ui.fueling || this.restarting) {
       this.controls.movementSpeed = 0;
     } else {
       this.controls.movementSpeed = 10;
