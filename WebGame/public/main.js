@@ -112,6 +112,7 @@ var mainState = {
 		world.gameOverTimer = 10;
 		world.labelBlow.text = "Game Over!";
 		world.ship.body.gravity.y = 0;
+		world.ship.body.acceleration.y = 0;
 		world.ship.body.velocity.y = 0;
 		world.game.time.events.remove(world.timer);
 	}
@@ -182,7 +183,7 @@ var mainState = {
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
-		} else if (!world.ship.alive && howMuch) {
+		} else if (world.fueling && howMuch) {
 			// Increment fuel
 			world.fuel += Math.floor(howMuch/15);
 			console.log(howMuch)
