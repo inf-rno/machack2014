@@ -197,6 +197,7 @@
 
     this._endScaleDest = 1;
     this.over = true;
+    this.duration = 0;
     Collectible.Sounds.game.stop();
     Collectible.Sounds.scoreboard.play({
       loop: true
