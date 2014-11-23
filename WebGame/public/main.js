@@ -115,8 +115,16 @@ var mainState = {
 		world.game.time.events.remove(world.timer);
 	}
 		
-		if (world.ship.y < 0){world.ship.y = WORLD_HEIGHT-50;}
-		if (world.ship.y > WORLD_HEIGHT - 50){world.ship.y = 0;}
+		if (world.ship.y < world.ship.height/2)
+		{
+			world.ship.y = world.ship.height/2;
+			world.ship.body.velocity.y = 0;
+		}
+		if (world.ship.y > (WORLD_HEIGHT -  50)- (world.ship.height*0.5))
+		{
+			world.ship.y = (WORLD_HEIGHT -  50)- (world.ship.height*0.5);
+			world.ship.body.velocity.y = 0;
+		}
 
         game.physics.arcade.overlap(world.ship, world.coins, world.hitCoin, null, world); 
 	game.physics.arcade.overlap(world.ship, world.traps, world.hitTrap, null, world);
