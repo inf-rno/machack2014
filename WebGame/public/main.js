@@ -68,7 +68,7 @@ var mainState = {
 
         // New anchor position
         world.ship.anchor.setTo(0.5, 0.5);
-	world.bird.alive = false; // Game not running yet
+	world.ship.alive = false; // Game not running yet
  
         var spaceKey = world.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(world.jump, world); 
@@ -97,7 +97,7 @@ var mainState = {
     update: function() {
 		world.labelFuel.text = world.fuel;
 
-	if(!world.bird.alive) {
+	if(!world.ship.alive) {
 		// Game not started
 		return;
 	}
@@ -168,7 +168,7 @@ var mainState = {
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
-		} else if (!world.bird.alive && howMuch) {
+		} else if (!world.ship.alive && howMuch) {
 			// Increment fuel
 			world.fuel += Math.floor(howMuch/15);
 			console.log(howMuch)
@@ -300,8 +300,8 @@ setInterval(function(){
 			world.coins.createMultiple(20, 'coin');
 			world.traps.createMultiple(20, 'trap');
 			world.timer = world.game.time.events.loop(3500, world.addRowOfStuff, world);
-			world.bird.body.gravity.y = 500;
-			world.bird.alive = true;
+			world.ship.body.gravity.y = 500;
+			world.ship.alive = true;
 			
 			world.labelBlow.text = "";
 			world.labelBlowTimer.text = "";
