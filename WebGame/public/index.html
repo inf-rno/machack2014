@@ -30,7 +30,7 @@
 		socket.on('flow', function(msg){
 			if (world)
 			{
-				world.flap(msg.value);
+				world.flap(msg.value, msg.pulses);
 			}
 		});
   </script>
