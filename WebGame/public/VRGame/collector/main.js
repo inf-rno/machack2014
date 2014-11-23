@@ -242,7 +242,7 @@ Cardboard.prototype.resize = function() {
     console.log(msg.value);
 	if (!this.ui.over)
 	{
-		this._velocity += msg.value / 600;
+		this._velocity += msg.value / 800;
 		this._jumping = true;
     }
 	return this;
@@ -277,8 +277,12 @@ Cardboard.prototype.resize = function() {
 
     this.controls.update(clock.getDelta());
 
+    this._velocity = Math.min(this._velocity, 1);
+
     fpv.y += this._velocity;
     fpv.y = Math.max(fpv.y, 0);
+
+    fpv.y = Math.min(fpv.y, 20);
 
     if (fpv.y <= 0) {
       fpv.y = 0;
