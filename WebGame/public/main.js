@@ -260,7 +260,7 @@ var mainState = {
     },
 
     addRowOfTraps: function() {
-        var hole = Math.floor(Math.random()*5)+1;
+        var hole = Math.floor(Math.random()*WORLD_HEIGHT / 60)+1;
         
         for (var i = 0; i < WORLD_HEIGHT / 60; i++)
             if (i == hole && i != hole +1) 
