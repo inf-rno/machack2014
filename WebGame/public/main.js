@@ -23,7 +23,11 @@ var mainState = {
         game.load.image('ship', 'assets/ship_with_flame_horizontal.png');
         game.load.image('ship_idle', 'assets/ship_horizontal.png');
         game.load.image('coin', 'assets/coin.png'); 
-		game.load.image('trap', 'assets/trap.png'); 
+		game.load.image('jewel1_evil', 'assets/jewel1_evil.png');
+		game.load.image('jewel2_evil', 'assets/jewel2_evil.png');
+		game.load.image('jewel3_evil', 'assets/jewel3_evil.png');
+		game.load.image('jewel4_evil', 'assets/jewel4_evil.png');
+		game.load.image('jewel5_evil', 'assets/jewel5_evil.png');
 		
 		game.load.image('jewel1', 'assets/jewel1.png');
 		game.load.image('jewel2', 'assets/jewel2.png');
@@ -61,7 +65,7 @@ var mainState = {
         world.traps.enableBody = true;
 		for (var i=0;i<20;i++)
 		{
-			var trap = world.traps.create(0,0, 'trap',null,false);
+			var trap = world.traps.create(0,0, 'jewel'+((i%5)+1)+'_evil',null,false);
 			world.traps.add(trap);
 			trap.anchor.setTo(0.5,0.5);
 		}
