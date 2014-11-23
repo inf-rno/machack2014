@@ -31,6 +31,12 @@ var mainState = {
 		game.load.image('jewel4', 'assets/jewel4.png');
 		game.load.image('jewel5', 'assets/jewel5.png');
 		
+		game.load.image('trap1', 'assets/trap1.png');
+		game.load.image('trap2', 'assets/trap2.png');
+		game.load.image('trap3', 'assets/trap3.png');
+		game.load.image('trap4', 'assets/trap4.png');
+		game.load.image('trap5', 'assets/trap5.png');
+		
 		game.load.image('background', 'assets/milkyway_seamless.jpg');
 		game.load.image('background2', 'assets/space_cloud.png');
 		game.load.image('background3', 'assets/space_cloud_small.png');
@@ -65,9 +71,11 @@ var mainState = {
 		
         world.traps = game.add.group();
         world.traps.enableBody = true;
-		for (var i=0;i<20;i++)
+		for (var i=1;i<=5;i++)
 		{
-			var trap = world.traps.create(0,0, 'trap',null,false);
+			var trap = world.traps.create(0,0, 'trap'+i,null,false);
+			trap.width *= 1.5;
+			trap.height *= 1.5;
 			world.traps.add(trap);
 			trap.anchor.setTo(0.5,0.5);
 		}
