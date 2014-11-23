@@ -15,7 +15,7 @@ function Cardboard() {
   this.effect = new THREE.StereoEffect(this.renderer);
 
   this.camera = new THREE.PerspectiveCamera(
-  90, window.innerWidth / window.innerHeight, 0.001, 700
+  90, window.innerWidth / window.innerHeight, 0.001, 1700
   );
   this.scene.add(this.camera);
 
@@ -155,7 +155,7 @@ Cardboard.prototype.resize = function() {
 
     this.particles = new ParticleField(this.cameras.firstPerson, 50, 20, 0.5, 4);
 
-    this.collectible = new Collectible(0.66, this.cameras.firstPerson.far, 10, 10, 1);
+    this.collectible = new Collectible(0.66, this.cameras.firstPerson.far, 10, 200, 1);
     this.ui = new UI(this.collectible);
     this.explosion = new Explosion(100);
     this.collectible.explosion = this.explosion;

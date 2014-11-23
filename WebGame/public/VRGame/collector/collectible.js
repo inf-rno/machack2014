@@ -219,9 +219,9 @@
     dist = dx * dx + dz * dz;
     threshold = (camera.far * 1.33) * (camera.far * 1.33);
 
-    if (dist > threshold) {
+    /*if (dist > threshold) {
       this.restart(v, true);
-    }
+    }*/
 
     return this;
 
