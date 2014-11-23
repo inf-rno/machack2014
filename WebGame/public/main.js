@@ -49,7 +49,9 @@ var mainState = {
 
     create: function() {
 		world = this;
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+        world.gamePulses = 0;
+	world.maxIntensity = 0;
+	game.physics.startSystem(Phaser.Physics.ARCADE);
 		
 		world.background = game.add.tileSprite(0,0,WORLD_WIDTH,WORLD_HEIGHT,'background');
 		world.background.autoScroll(-10,0);
@@ -101,6 +103,8 @@ var mainState = {
 	
 		world.fueling = true;
 		world.fuelingTimeLeft = 10;
+		world.gameOverLabel = world.game.add.text(200, 270, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
+		world.gameOverLabel.text = "";
 		world.labelBlow = world.game.add.text(380, 270, "0", { font: "36px Avenir Heavy", fill: "#ffffff" }); // Avenir Heavy
 		world.labelBlow.text = "Blow to fuel up!"
 		
@@ -129,7 +133,7 @@ var mainState = {
 		world.ship.alive = false;
 		world.ship.loadTexture('ship_idle', 0);
 		world.gameOverTimer = 10;
-		world.labelBlow.text = "Game Over!";
+		world.gameOverLabel.text = "Game Over! " + Math.round(world.gamePulses/7.5/60.0*100)/100 + " liters, max intensity " + world.maxIntensity;
 		world.ship.body.gravity.y = 0;
 		world.ship.body.acceleration.y = 0;
 		world.ship.loadTexture('ship_idle', 0);
@@ -196,10 +200,14 @@ var mainState = {
         // Play sound
         world.jumpSound.play();
     },
-    flap:function(howMuch)
+    flap:function(howMuch, pulses)
 	{
 		if (howMuch != 0  && world.ship.alive)
 		{
+			world.gamePulses += pulses;
+			if(world.maxIntensity < howMuch) {
+				world.maxIntensity = howMuch;
+			}
 			var currentAcceleration = capAcceleration(world.ship.body.acceleration.y);
 			var newAcceleration = capAcceleration(0 - (howMuch*FLOW_TO_ACCEL_MULTIPLIER));
 			world.ship.body.acceleration.y = newAcceleration;
@@ -334,6 +342,7 @@ setInterval(function(){
 		world.labelBlowTimer.text = world.gameOverTimer;
 		if(world.gameOverTimer <= 0) {
 			world.gameOver = false;
+			world.gameOverLabel.text = "";
 			world.restartGame();
 		}
 		
