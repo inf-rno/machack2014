@@ -159,6 +159,8 @@ Cardboard.prototype.resize = function() {
     this.ui = new UI(this.collectible);
     this.explosion = new Explosion(100);
     this.collectible.explosion = this.explosion;
+	
+	this.cockpit = new Cockpit(25, this.scene);
 
     this.ui.position.z = -6;
     this.explosion.position.z = -6;
@@ -353,6 +355,8 @@ Cardboard.prototype.resize = function() {
 	this.skyBox.position.x = fpv.x;
 	this.skyBox.position.y = fpv.y;
 	this.skyBox.position.z = fpv.z;
+	
+	this.cockpit.update(fp);
   };
 
   Collector.prototype.render = function() {
