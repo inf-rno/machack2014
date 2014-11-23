@@ -154,7 +154,7 @@ style.firebugResetStyles {
   <body>
 
     <div class="script">
-      
+      <script src="../socket.io/socket.io.js"></script>
       <script src="third-party/threejs/three.js"></script>
       <script src="third-party/threejs/StereoEffect.js"></script>
       <script src="third-party/threejs/DeviceOrientationControls.js"></script>
@@ -178,6 +178,11 @@ style.firebugResetStyles {
       <script src="collector/main.js"></script>
 
       <script>
+
+      var socket = io();
+      socket.on('flow', function(msg){
+          console.log(msg);
+      });
 
 var experience = new Collector();
 document.body.appendChild(experience.renderer.domElement);
