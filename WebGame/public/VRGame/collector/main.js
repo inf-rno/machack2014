@@ -212,7 +212,7 @@ Cardboard.prototype.resize = function() {
       this.fullscreen = function() {};
     }
 	
-	window.flowListener = this.fly;
+	window.flowListener = scope.fly.bind(scope);
 
   };
 
@@ -240,7 +240,12 @@ Cardboard.prototype.resize = function() {
 
     //todo: Now what?
     console.log(msg.value);
-    return this;
+	if (!this.ui.over)
+	{
+		this._velocity = msg.value / 30;
+		this._jumping = true;
+    }
+	return this;
 
   };
 
@@ -284,7 +289,7 @@ Cardboard.prototype.resize = function() {
         this.restarting = false;
       }
     } else {
-      this._velocity -= 0.01;
+      this._velocity -= 1;
     }
 
     var s = Math.max(Math.min(1 - fpv.y / 50, 1), 0);
