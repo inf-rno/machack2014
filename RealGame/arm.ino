@@ -1,10 +1,12 @@
 
 Servo arm;
+Servo mapS;
 
 //PINS
 int servoPin = A0;
 int flowSensor = D0;
-
+int mapServorPin = A1;
+int spkPin = D1;
 
 
 //variables
@@ -16,24 +18,36 @@ int dur = 0;
 float rate = 0;
 bool flow = false;
 float armPos = 180;
+int maxRate = 0;
+int irdet = A2;
+
+
+//  digitalWrite(led, digitalRead(irdet));
 
 //prototypes
 bool updateFlow();
+void playBippidiBoop();
 
 void setup()
 {
     Serial.begin(9600);
     arm.attach(servoPin);  // attaches the servo on the A0 pin to the servo object
+    mapS.attach(mapServorPin);
     pinMode(flowSensor, INPUT);
+    pinMode(irdet, INPUT);
+    pinMode(spkPin, OUTPUT);
+    mapS.write(60);
 }
 
 void loop(){
     bool pop = updateFlow();
     if(pop)
     {
-        armPos = min(armPos + 30, 180);
+        armPos = min(armPos + 20, 180);
+        playBippidiBoop();
         Serial.print("pop");
         Serial.println(armPos);
+
     }
     if(armPos>90)
         armPos-=0.15;
@@ -59,14 +73,25 @@ bool updateFlow()
         prevRealTick = realTick;
         rate = 1000.0/dur;
         dur=0;
+
         Serial.println(rate);
-        if(rate > 20 && !flow)
+
+        if(!flow)
         {
-            flow = true;
-            return true;
+            if(rate > maxRate * 1.1)
+            {
+                flow = true;
+                maxRate = rate;
+                return true;
+            }
         }
-        else if(rate < 15 && flow) {
-            flow = false;
+        else {
+            if(rate > maxRate)
+                maxRate = rate;
+            if(rate < maxRate * .9 || rate < 15) {
+                flow = false;
+                maxRate = rate;
+            }
         }
     }
     else {
@@ -74,4 +99,10 @@ bool updateFlow()
     }
 
     return false;
+}
+
+void playBippidiBoop() {
+    tone(spkPin, 2112,200);
+    delay(200);
+    noTone(spkPin);
 }
