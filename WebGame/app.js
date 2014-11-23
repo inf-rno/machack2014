@@ -2,12 +2,21 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var raspi = require('raspi-io');
-var five = require("johnny-five");
-var board = new five.Board({
+
+var ILikePie = true;
+
+var board;
+var raspi;
+var five;
+if( ILikePie )
+{
+	raspi = require('raspi-io');
+	five = require("johnny-five");
+
+	board = new five.Board({
      io: new raspi()
     });
-
+}
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket){
@@ -46,7 +55,7 @@ setInterval(function(){
             fakingZero = false;
             maxFlow = currentFlow;
         }
-        var emitedFlow = currentFlow;
+        var emitedFlow = Math.round(currentFlow);
         if(currentFlow < NO_FLOW) {
             emitedFlow = 0;
             maxFlow = 0;
@@ -78,6 +87,7 @@ setInterval(function(){
 	}
 },100);
 
+if( ILikePie ){
 var statusLED;
 board.on('ready', function(){
    var led = new five.Led(11);
@@ -95,5 +105,5 @@ board.on('ready', function(){
   })
 
 });
-
+}
 http.listen(process.env.PORT || 80);
