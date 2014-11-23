@@ -181,7 +181,10 @@ style.firebugResetStyles {
 
       var socket = io();
       socket.on('flow', function(msg){
-          console.log(msg);
+		if (window.flowListener)
+		{
+			window.flowListener(msg);
+		}
       });
 
 var experience = new Collector();

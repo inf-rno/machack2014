@@ -205,6 +205,8 @@ Cardboard.prototype.resize = function() {
       // this.renderer.autoClear = true;
       this.fullscreen = function() {};
     }
+	
+	window.flowListener = this.fly;
 
   };
 
@@ -228,6 +230,14 @@ Cardboard.prototype.resize = function() {
       this.restart();
     }
 
+    return this;
+
+  };
+  
+  Collector.prototype.fly = function(msg) {
+
+    //todo: Now what?
+    console.log(msg.value);
     return this;
 
   };
