@@ -108,6 +108,7 @@ var mainState = {
 	}
         if (world.fuel <= 0) {
 		world.gameOver = true;
+		world.ship.alive = false;
 		world.gameOverTimer = 10;
 		world.labelBlow.text = "Game Over!";
 		world.ship.body.gravity.y = 0;
@@ -297,6 +298,7 @@ setInterval(function(){
     {
 	if(world.gameOver) {
 		world.gameOverTimer--;
+		world.labelBlowTimer.text = world.gameOverTimer;
 		if(world.gameOverTimer <= 0) {
 			world.gameOver = false;
 			world.restartGame();
