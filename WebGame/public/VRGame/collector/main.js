@@ -102,6 +102,22 @@ Cardboard.prototype.resize = function() {
 
   var temp = new THREE.Vector3();
   var clock = new THREE.Clock(true);
+  
+  function loadTexture(path) {
+    if (typeof passthrough_vars !== 'undefined' && passthrough_vars.offline_mode) {
+      // same origin policy workaround
+      var b64_data = $('img[data-src="' + path + '"]').attr('src');
+
+      var new_image = document.createElement( 'img' );
+      var texture = new THREE.Texture( new_image );
+      new_image.onload = function()  {
+        texture.needsUpdate = true;
+      };
+      new_image.src = b64_data;
+      return texture;
+    }
+    return THREE.ImageUtils.loadTexture(path);
+  }
 
   var Collector = root.Collector = function() {
 
@@ -133,15 +149,11 @@ Cardboard.prototype.resize = function() {
     this.controls.rollSpeed = Math.PI / 4;
     this.controls.autoForward = true;
 
-    this.scene.fog = new THREE.Fog(0x6dcff6, 10, 45);
+    this.scene.fog = new THREE.Fog(0x000000, 10, 45);
 
     this.garden = new Garden(25, 8);
 
     this.particles = new ParticleField(this.cameras.firstPerson, 50, 20, 0.5, 4);
-    this.field = new THREE.Mesh(new THREE.PlaneGeometry(this.cameras.firstPerson.far * 100, this.cameras.firstPerson.far * 100, 1, 1), new THREE.MeshBasicMaterial({
-      color: 0x8cc63e,
-      side: THREE.DoubleSide
-    }));
 
     this.collectible = new Collectible(0.66, this.cameras.firstPerson.far, 10, 10, 10);
     this.ui = new UI(this.collectible);
@@ -151,19 +163,30 @@ Cardboard.prototype.resize = function() {
     this.ui.position.z = -6;
     this.explosion.position.z = -6;
 
-    this.field.rotation.x = Math.PI / 2;
-    this.field.scale.set(5, 5, 5);
-    this.field.position.y = -3;
 
     this.cameras.firstPerson.shadow.position.y = -2.9;
     this.cameras.firstPerson.shadow.scale.set(5, 5, 5);
+	
+	var geometry = new THREE.SphereGeometry(30, 60, 40);
+	var uniforms = {
+	  texture: { type: 't', value: loadTexture('/../assets/milkyway_seamless.jpg') }
+	};
+
+	var material = new THREE.ShaderMaterial( {
+	  uniforms:       uniforms,
+	  vertexShader:   document.getElementById('sky-vertex').textContent,
+	  fragmentShader: document.getElementById('sky-fragment').textContent
+	});
+
+	this.skyBox = new THREE.Mesh(geometry, material);
+	this.skyBox.scale.set(-1, 1, 1);
+	this.skyBox.eulerOrder = 'XZY';
+	this.skyBox.renderDepth = 1.0;
+	this.scene.add(this.skyBox);
 
     this.scene.add(this.collectible);
     this.scene.add(this.particles);
-    this.scene.add(this.field);
-    this.scene.add(this.garden);
     this.scene.add(this.cameras.firstPerson);
-    this.scene.add(this.cameras.firstPerson.shadow);
     this.scene.add(this.explosion);
 
     this.cameras.firstPerson.add(this.ui);
@@ -205,7 +228,7 @@ Cardboard.prototype.resize = function() {
     }, 1000);
 
     this.effect.separation = 0;
-    this.renderer.setClearColor(0x6dcff6, 1);
+    this.renderer.setClearColor(0x000000, 1);
 
     if (!has.mobile) {
       // this.renderer.autoClear = true;
@@ -268,7 +291,7 @@ Cardboard.prototype.resize = function() {
 
     var fp = this.cameras.firstPerson;
     var fpv = fp.position;
-
+	
     if (this.ui.over || this.restarting) {
       this.controls.movementSpeed = 0;
     } else {
@@ -323,12 +346,13 @@ Cardboard.prototype.resize = function() {
     this.ui.update(fp);
     this.particles.update(fp);
 
-    this.field.position.x = fpv.x;
-    this.field.position.z = fpv.z;
-
     this.garden.update(fp);
     this.explosion.update();
 
+	
+	this.skyBox.position.x = fpv.x;
+	this.skyBox.position.y = fpv.y;
+	this.skyBox.position.z = fpv.z;
   };
 
   Collector.prototype.render = function() {
