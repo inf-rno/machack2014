@@ -130,12 +130,13 @@
     window.localStorage['collector-score'] = '[]';
   }
 
-  var UI = root.UI = function(collectible, duration) {
+  var UI = root.UI = function(collectible, duration, collector) {
 
     THREE.Mesh.call(this, UI.Geometry, UI.Material);
 
     var scope = this;
 
+    this.collector = collector;
     this.collectible = collectible;
     this.collectible._onCollect = function(coin) {
       scope.onCollect(coin);
@@ -197,6 +198,7 @@
 
     this._endScaleDest = 1;
     this.over = true;
+    this.prev_duration = this.duration; 
     this.duration = 0;
     Collectible.Sounds.game.stop();
     Collectible.Sounds.scoreboard.play({
@@ -351,9 +353,14 @@
       }
 
       ctx.font = '800 ' + ((fontSize * (15 / 24))) + 'px Sniglet, sans-serif';
-      ctx.fillText('PRESS R TO RESTART', 0, 4.5 * lineHeight - fontSize / 2);
+
+      var timeLeft = Math.round((10000-(now - this.startTime)+this.prev_duration)/1000);
+      ctx.fillText('RESTARTING IN ' + timeLeft, 0, 4.5 * lineHeight - fontSize / 2);
       ctx.restore();
 
+      if(timeLeft <= 0 ) {
+        this.collector.restart();
+      }
     }
 
     ctx.font = '800 ' + fontSize + 'px Sniglet, sans-serif';
