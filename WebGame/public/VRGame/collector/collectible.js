@@ -83,7 +83,7 @@
   var width = 1;
   var height = 1;
   var resolution = 32;
-
+  
   var points = _.map(_.range(resolution), function(i) {
     var pct = i / (resolution - 1);
     var theta = pct * Math.PI * 2;
@@ -346,7 +346,7 @@
   Sound.ready(function() {
 
     sounds.coin = new Sound('./audio/coin.mp3');
-    sounds.scoreboard = new Sound('./audio/scoreboard.mp3');
+    //sounds.scoreboard = new Sound('./audio/scoreboard.mp3');
     sounds.game = new Sound('./audio/gameplay.mp3', ready);
     sounds.wind = new Sound('./audio/wind.mp3', function() {
       sounds.wind.play({
