@@ -30,7 +30,7 @@
 
     this.size = size;
 
-	var geometry = new THREE.SphereGeometry(20, 120, 120);
+	var geometry = new THREE.SphereGeometry(2, 120, 120);
 	var uniforms = {
 	  texture: { type: 't', value: loadTexture('./images/cockpit.png') }
 	};
@@ -46,7 +46,8 @@
 	this.Hud.scale.set(-1, 1, 1);
 	this.Hud.eulerOrder = 'XZY';
 	this.Hud.renderDepth = 1.0;
-	
+	this.Hud.rotateY(-165/180*Math.PI);
+	this.Hud.rotateZ(30/180*Math.PI);
 	this.add(this.Hud);
 	scene.add(this.Hud);
 	console.log("trying to add cockpit");
