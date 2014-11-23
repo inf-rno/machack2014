@@ -188,6 +188,12 @@ Cardboard.prototype.resize = function() {
         case 32: // Spacebar
           scope.jump();
           break;
+
+        case 82: // R
+            if (scope.ui.over) {
+                scope.restart();
+            }
+          break;
       }
 
     }, false);
@@ -225,10 +231,6 @@ Cardboard.prototype.resize = function() {
 
     this._velocity = 0.4;
     this._jumping = true;
-
-    if (this.ui.over) {
-      this.restart();
-    }
 
     return this;
 
