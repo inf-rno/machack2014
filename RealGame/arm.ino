@@ -7,6 +7,7 @@ int servoPin = A0;
 int flowSensor = D0;
 int mapServorPin = A1;
 int spkPin = D1;
+int irdet = A2;
 
 
 //variables
@@ -19,10 +20,8 @@ float rate = 0;
 bool flow = false;
 float armPos = 180;
 int maxRate = 0;
-int irdet = A2;
 
 
-//  digitalWrite(led, digitalRead(irdet));
 
 //prototypes
 bool updateFlow();
@@ -44,7 +43,6 @@ void loop(){
     if(pop)
     {
         armPos = min(armPos + 20, 180);
-        playBippidiBoop();
         Serial.print("pop");
         Serial.println(armPos);
 
@@ -53,6 +51,9 @@ void loop(){
         armPos-=0.15;
 
     arm.write(armPos);
+
+    if(digitalRead(irdet) == LOW)
+        playBippidiBoop();
 }
 
 bool updateFlow()

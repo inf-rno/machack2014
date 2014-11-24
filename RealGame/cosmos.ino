@@ -24,6 +24,7 @@ void lightRandom() {
   digitalWrite(leds[prevIndex][0], LOW);
   digitalWrite(leds[prevIndex][1], LOW);
   prevIndex = random(3);
+  // prevIndex = 1;
   digitalWrite(leds[prevIndex][0], HIGH);
   digitalWrite(leds[prevIndex][1], HIGH);
 }
